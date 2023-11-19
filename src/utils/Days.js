@@ -1,0 +1,1 @@
+export const Days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta','Sábado'];
