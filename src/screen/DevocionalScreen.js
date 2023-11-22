@@ -3,96 +3,154 @@ import {
     Dimensions,
     StyleSheet,
     View,
-    FlatList,
-}from 'react-native';
+    ScrollView,
+    TextInput,
+} from 'react-native';
 import Header from '../components/Header';
 import Card from '../components/Card';
 import Label from '../components/Label';
-import { Colors, Days } from '../utils';
-import Button from '../components/Button';
-import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { Colors } from '../utils';
 import { DevocionalService } from '../service/DevocionalService';
-import ListItem from '../components/ListItem';
 import Footer from '../components/Footer';
+import Input from '../components/Input';
+import PrayReasons from '../components/PrayReasons';
+import { initialWindowMetrics } from 'react-native-safe-area-context';
 
-export default function DevocionalScreen({navigation}) {
-    const [date, setDate] = useState(null);
+export default function DevocionalScreen({navigation, route}) {
 
-    useEffect(() => {
-        let d = new Date();
+  const { text, dt, ref, devocional } = route.params;
 
-        setDate(`${Days[d.getDay()]} - ${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`);
-    }, []);
+  const [margin, setMargin] = useState(0);
+  const [msg, setMsg] = useState(null);
+  const [ctx, setCtx] = useState(null);
+  const [pray, setPray] = useState(null);
+  const [title, setTitle] = useState(null);
+  const [revelation, setRevelation] = useState(null);
+  const [application, setApplication] = useState(null);
 
-    return (
-        <FlatList contentContainerStyle={styles.ctn}
-            ListHeaderComponent={
-                <View style={styles.listHeaderCtn}>
-                    <Header navigation={navigation} showActions={true}/>
+  useEffect(() => {
+    init();
+  }, []);
 
-                    <Card content={
-                        <View style={styles.cardContent}>
-                            <Label value={`${date}`} style={styles.lbl}/>
+  const init = () => {
+    setMsg(devocional ? devocional.msg : null);
+    setCtx(devocional ? devocional.ctx : null);
+    setPray(devocional ? devocional.pray : null);
+    setTitle(devocional ? devocional.title : null);
+    setRevelation(devocional ? devocional.revelation : null);
+    setApplication(devocional ? devocional.application : null);
+  }
 
-                            <Label value={'Insira um título'} size={16} style={styles.lbl}/>
+  const ajustLayout = (layoutCardContent) => {
+    const {height} = layoutCardContent;
 
-                            <Label value={'Sejam meus imitadores como eu sou de Cristo\n1 Coríntios 11:1'} 
-                                    size={18} style={styles.txt} bold={true}/>
-                            
-                            <Label value={'Qual a mensagem central do texto?'} size={14} 
-                                    style={[styles.lbl, styles.question]}/>
+    setMargin(height);
+  }
 
-                            <Label value={'Qual o contexto?'} size={14} 
-                                    style={[styles.lbl, styles.question]}/>
+  const handleSubmit = () => {
+    let devo = {
+      id:devocional ? devocional.id : new Date().getTime(),
+      dt:devocional ? devocional.dt : dt,
+      ref:devocional ? devocional.ref : ref,
+      txt:devocional ? devocional.txt : text,
+      title:title,
+      msg:msg,
+      ctx:ctx,
+      revelation:revelation,
+      application:application,
+      pray:pray,
+    }
 
-                            <Label value={'Como o texto revela Jesus?'} size={14} 
-                                    style={[styles.lbl, styles.question]}/>
+    DevocionalService.salvarDevocional(devo)
+    .then(() => navigation.navigate('Home'));
+  }
 
-                            <Label value={'Como aplicar a mensagem ao meu dia-a-dia?'} size={14} 
-                                    style={[styles.lbl, styles.question]}/>
+  return (
+    <ScrollView contentContainerStyle={styles.ctn} 
+        keyboardShouldPersistTaps='always'>
+      <View style={[styles.listHeaderCtn, {marginBottom:margin}]}>
+          <Header navigation={navigation} showActions={true} 
+              onSave={() => handleSubmit()}
+          />
 
-                            <Label value={'Minha oração:'} size={14} 
-                                    style={[styles.lbl, styles.question]}/>
+          <Card content={
+            <View style={styles.cardContent}
+                onLayout={(ev) => ajustLayout(ev.nativeEvent.layout)}>
 
-                            <Label value={'Interceder por:'} size={14} 
-                                    style={[styles.lbl, styles.question]}/>
-                        </View>
-                    }/>
-                </View>
-            }
-            ListEmptyComponent={<View style={styles.emptyCtn}></View>}
-            ListFooterComponent={<Footer/>}
-            renderItem={ ({item}) => <ListItem item={item}/>}
-        />
-    )
+              <Label value={`${devocional ? devocional.dt : dt}`} 
+                  style={styles.lbl}/>
+
+              <TextInput value={title} 
+                  style={styles.input}
+                  onChangeText={(text) => setTitle(text)}
+                  placeholder='Insira um título'
+                  placeholderTextColor={Colors.gray}
+                  textBreakStrategy='simple'
+                  multiline={true}
+              />
+
+              <Label value={devocional ? devocional.txt : text} size={18} 
+                  style={styles.txt} bold={true}/>
+
+              <Input label={'Qual a mensagem central do texto?'}
+                  value={msg}
+                  onChange={(val) => setMsg(val)}/>
+
+              <Input label={'Qual o contexto?'}
+                  value={ctx}
+                  onChange={(val) => setCtx(val)}/>
+
+              <Input label={'Como o texto revela Jesus?'}
+                  value={revelation}
+                  onChange={(val) => setRevelation(val)}/>
+
+              <Input label={'Como aplicar a mensagem ao meu dia-a-dia?'}
+                  value={application}
+                  onChange={(val) => setApplication(val)}/>
+
+              <Input label={'Minha oração'}
+                  value={pray}
+                  onChange={(val) => setPray(val)}/>
+
+              <PrayReasons />
+            </View>
+          }/>
+        </View>
+        <Footer/>
+    </ScrollView>
+  )
 }
 
 const screen = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
-    ctn:{
-        minHeight:screen.height
-    },
-    listHeaderCtn:{},
-    emptyCtn:{
-        height:screen.height * 3
-    },
-    cardContent:{
-        minHeight:screen.height * 0.3,
-    },
-    lbl:{
-        color:Colors.gray,
-        marginTop:5,
-        textAlign:'center'
-    },
-    question:{
-        textAlign:'justify',
-        marginBottom:10,
-    },
-    txt:{
-        color:Colors.blue,
-        marginTop:10,
-        marginBottom:20,
-        textAlign:'center'
-    },
+  ctn:{
+    minHeight:screen.height
+  },
+  listHeaderCtn:{},
+  cardContent:{
+    minHeight:screen.height * 0.3,
+    width:screen.width - 60,
+  },
+  lbl:{
+    color:Colors.gray,
+    marginTop:5,
+    textAlign:'center'
+  },
+  question:{
+    textAlign:'justify',
+    marginBottom:10,
+  },
+  txt:{
+    color:Colors.blue,
+    marginTop:10,
+    marginBottom:20,
+    textAlign:'center'
+  },
+  input:{
+    color:Colors.gray,
+    fontFamily:'JosefinSans-Bold',
+    fontSize:18,
+    textAlign:'center'
+  }
 });

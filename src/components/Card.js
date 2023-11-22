@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
         borderRadius:10,
         backgroundColor:Colors.white,
         position:'absolute',
-        top:screen.height * 0.25,
+        top:screen.height * 0.23,
         paddingVertical:20,
         paddingHorizontal:10
     },

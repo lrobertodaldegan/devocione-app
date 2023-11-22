@@ -3,25 +3,81 @@ import {
     View,
     StyleSheet,
     Dimensions,
+    TouchableHighlight,
 }from 'react-native';
 import {Colors} from '../utils/Colors';
 import Label from './Label';
-import Button from './Button';
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import ShareButton from './ShareButton';
 
-export default function ListItem({item}) {
-    return (
-        <View style={styles.ctn} elevation={2}>
-            <Label style={[styles.lbl, ]} value={`${item.day} - ${item.dt}`}/>
+export default function ListItem({navigation, item}) {
+  const renderResume = () => {
+    if(item.msg)
+      return item.msg;
+    
+    if(item.ctx)
+      return item.ctx;
 
-            <Label style={[styles.lbl, styles.title]} value={`${item.txt} - ${item.title}`} 
-                    size={14} bold={true}/>
+    if(item.revelation)
+      return item.revelation;
 
-            <Label style={[styles.lbl, styles.msg]} value={`${item.msg}`} size={12}/>
+    if(item.application)
+      return item.application;
 
-            <Button label={'Compartilhar'} icon={faPaperPlane} iconSize={10} labelSize={12}/>
-        </View>
-    )
+    if(item.txt)
+      return item.txt;
+
+    return '';
+  }
+
+  const buildShareText = () => {
+    let msg = `Olá! Veja isso:\n\n`;
+
+    msg = msg + `${item.title ? item.title + '\n\n' : ''}`;
+    msg = msg + `${item.txt ? item.txt : ''}`;
+
+    if(item.msg){
+      msg = msg + `\n\nMensagem central do texto:\n`;
+      msg = msg + `${item.msg}`;
+    }
+
+    if(item.ctx){
+      msg = msg + `\n\nContexto:\n`;
+      msg = msg + `${item.ctx}`;
+    }
+
+    if(item.revelation){
+      msg = msg + `\n\nComo o texto revela Jesus:\n`;
+      msg = msg + `${item.revelation}`;
+    }
+
+    if(item.application){
+      msg = msg + `\n\nComo aplicar o texto ao dia-a-dia:\n`;
+      msg = msg + `${item.application}`;
+    }
+
+    msg = msg + `\n\nApp Devocione: Versículos bíblicos para devocionais`;
+    msg = msg + `\nQue Deus te abençoe!`;
+
+    return msg;
+  }
+
+  return (
+    <TouchableHighlight underlayColor={Colors.white} 
+        onPress={() => navigation.navigate('Devocional', {devocional:item})}>
+      <View style={styles.ctn} elevation={2}>
+          <Label style={[styles.lbl]} value={`${item.dt}`}/>
+
+          <Label style={[styles.lbl, styles.title]} 
+              value={`${item.ref ? item.ref : ''} - ${item.title ? item.title : ''}`} 
+              size={14} bold={true}/>
+
+          <Label style={[styles.lbl, styles.msg]} 
+              value={renderResume()} size={12}/>
+
+          <ShareButton message={buildShareText()}/>
+      </View>
+    </TouchableHighlight>
+  )
 }
 
 const screen = Dimensions.get('screen');

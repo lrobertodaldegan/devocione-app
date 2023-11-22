@@ -14,7 +14,7 @@ import Logo from './Logo';
 import Icon from './Icon';
 
 
-export default function Header({navigation, showActions=false}) {
+export default function Header({navigation, showActions=false, onSave=()=>null}) {
     const renderLeftAction = () => {
         if(showActions === true){
             return (
@@ -32,7 +32,7 @@ export default function Header({navigation, showActions=false}) {
         if(showActions === true){
             return (
                 <TouchableHighlight underlayColor={Colors.blue} 
-                        onPress={() => navigation.goBack()}>
+                        onPress={onSave}>
                     <Icon icon={faFloppyDisk} label='Salvar' />
                 </TouchableHighlight>
             )
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
         height:screen.height * 0.35,
         width:screen.width,
         backgroundColor:Colors.blue,
-        paddingBottom:(screen.height * 0.2) /2,
+        paddingBottom:(screen.height * 0.35) /2,
         justifyContent:'center',
         alignItems:'center'
     },
@@ -76,6 +76,6 @@ const styles = StyleSheet.create({
         backgroundColor:Colors.blue,
         justifyContent:'center',
         alignItems:'center',
-        marginTop:50,
+        marginTop:(screen.height * 0.25) / 4,
     }
 });
