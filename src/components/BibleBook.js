@@ -1,26 +1,45 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     StyleSheet,
     View,
     Dimensions,
-    TouchableHighlight,
+    ActivityIndicator,
 }from 'react-native';
 import {Colors} from '../utils/Colors';
 import WhiteButton from './WhiteButton';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import Label from './Label';
 import BibleBookChapter from './BibleBookChapter';
+import { getChapter } from '../service/BibleService';
 
-export default function BibleBook({label, abrev, chapters=0}) {
-  const [selected, setSelected] = useState(false);
+export default function BibleBook({label, abrev, chapters=0, expand=false, chapter=null, verse=null, onAutomaticSelect=()=>null}) {
+  const [expanded, setExpanded] = useState(false);
+  const [showChapterContent, setShowChapterContent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [chapterVerses, setChapterVerses] = useState([]);
+  const [chapterSelected, setChapterSelected] = useState(null);
   const [icon, setIcon] = useState(faChevronDown);
 
+  useEffect(() => {
+    if(chapter !== null && expand === true){
+      setExpanded(true);
+      handleChapterSelection(chapter);
+
+      onAutomaticSelect();
+    }
+  },[]);
+
   const renderChapters = () => {
-    if(selected === true){
+    if(expanded === true){
       let opts = []
       
       for(let i=0; i < chapters; i++){
-        opts.push(<BibleBookChapter bookAbrev={abrev} chapter={i+1}/>);
+        opts.push(
+          <BibleBookChapter key={`${abrev}${i}`} 
+              chapter={i+1} 
+              selected={chapterSelected === i+1}
+              onSelection={handleChapterSelection}/>
+        );
       }
 
       return (
@@ -33,12 +52,60 @@ export default function BibleBook({label, abrev, chapters=0}) {
     }
   }
 
-  const handlePress = () => {
-    let slc = !selected;
+  const renderContent = () => {
+    if(loading === true){
+      return <ActivityIndicator color={Colors.white} 
+                style={{marginVertical:10}} size="small"/>
+    } else {
+      if(showChapterContent === true){
+        let verses = [];
 
-    setSelected(slc);
+        chapterVerses.map((cv) => {
+          verses.push(
+            <Label key={cv.number} size={20} 
+                value={`${cv.number} ${cv.text}`} 
+                style={[styles.verseLbl, verse === cv.number? {fontFamily:'JosefinSans-Regular'} : {}]}
+            />
+          );
+        });
+
+        return (
+          <View style={styles.chapterContentWrap}>
+            {verses}
+          </View>
+        )
+      } else {
+        return <></>
+      }
+    }
+  }
+
+  const handleChapterSelection = (chapter) => {
+    setLoading(true);
+
+    if(chapter === chapterSelected){
+      setChapterSelected(null);
+      setChapterVerses([]);
+      setShowChapterContent(false);
+    } else {
+      getChapter(abrev, chapter).then((result) => {
+        if(result.status === 200){
+          setChapterSelected(chapter);
+          setChapterVerses(result.content.verses);
+          setShowChapterContent(true);
+        }
+
+        setLoading(false);
+      });
+    }
+  }
+
+  const handlePress = () => {
+    let exp = !expanded;
+
+    setExpanded(exp);
     
-    setIcon(slc === true ? faChevronUp : faChevronDown);
+    setIcon(exp === true ? faChevronUp : faChevronDown);
   }
 
   return (
@@ -48,6 +115,8 @@ export default function BibleBook({label, abrev, chapters=0}) {
           action={() => handlePress()}/>
 
       {renderChapters()}
+
+      {renderContent()}
     </View>
   )
 }
@@ -80,5 +149,17 @@ const styles = StyleSheet.create({
     borderWidth:2,
     borderColor:Colors.white,
     backgroundColor:Colors.blue,
+  },
+  chapterContentWrap:{
+    backgroundColor:Colors.white,
+    borderRadius:5,
+    marginVertical:10,
+    paddingVertical:20,
+    paddingHorizontal:30
+  },
+  verseLbl:{
+    color:Colors.darkGray,
+    fontFamily:'JosefinSans-Light',
+    marginBottom:5
   },
 });

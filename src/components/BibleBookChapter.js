@@ -9,37 +9,25 @@ import {Colors} from '../utils/Colors';
 import Label from './Label';
 import { getChapter } from '../service/BibleService';
 
-export default function BibleBookChapter({bookAbrev, chapter, onSelection=()=>null}) {
+export default function BibleBookChapter({chapter, selected=false, onSelection=(chapterSelected)=>null}) {
   const [expanded, setExpanded] = useState(false);
-  const [content, setContent] = useState([]);
 
   const handleSelection = () => {
     let exp = !expanded;
 
     setExpanded(exp);
 
-    if(exp === true && (!content || content.length < 1)){
-      getChapter(bookAbrev, chapter).then((result) => {
-        setContent(result.content.verses);
-      });
-    }
-  }
-
-  const renderContent = () => {
-    //TODO
-    return <></>
+    onSelection(chapter);
   }
 
   return (
-    <View>
+    <View elevation={5}>
       <TouchableHighlight underlayColor={Colors.blue} 
-          onPress={() => setExpanded(!expanded)} 
-          style={[styles.chapOpt, expanded === true ? styles.chapSelected : {}]}>
+          onPress={handleSelection} 
+          style={[styles.chapOpt, selected === true ? styles.chapSelected : {}]}>
         
-        <Label key={chapter} value={`${chapter}`} size={16}/>
+        <Label key={chapter} value={`${chapter}`} size={20}/>
       </TouchableHighlight>
-
-      {renderContent()}
     </View>
   )
 }

@@ -60,6 +60,10 @@ export default function HomeScreen({navigation}) {
         t = {
           ref:`${result.content.book.name} ${result.content.chapter}:${result.content.number}`,
           content:result.content.text,
+          book:result.content.book.name,
+          abrev:result.content.book.abbrev,
+          chapter:result.content.chapter,
+          verse:result.content.number,
           success:true
         }
     } else {
@@ -105,7 +109,7 @@ export default function HomeScreen({navigation}) {
                 labelSize={14}
                 iconSize={10}
                 icon={faBook} 
-                action={() => navigation.navigate('Bible', {})}/>
+                action={() => navigation.navigate('Bible', {book:text.book, chapter:text.chapter, verse:text.verse})}/>
           </View>
         </>
       )

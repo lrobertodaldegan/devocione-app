@@ -4,23 +4,14 @@ import {
     StyleSheet,
     TouchableHighlight,
     FlatList,
-    View,
 }from 'react-native';
-import Header from '../components/Header';
-import Card from '../components/Card';
-import Label from '../components/Label';
 import { Colors, Days } from '../utils';
-import Button from '../components/Button';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { DevocionalService } from '../service/DevocionalService';
-import ListItem from '../components/ListItem';
-import Footer from '../components/Footer';
-import { getBooks, getRandomVerse, getVerseFromCache } from '../service/BibleService'; 
-import GrayButton from '../components/GrayButton';
-import { useIsFocused } from '@react-navigation/native';
+import { getBooks } from '../service/BibleService'; 
 import BibleBook from '../components/BibleBook';
 import Icon from '../components/Icon';
 import { BannerAd,BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+import { useScrollToTop } from '@react-navigation/native';
 
 const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-2420598559068720/7564787951';
 
@@ -29,6 +20,7 @@ export default function BibleScreen({navigation, route}) {
   const { book, chapter, verse } = route.params;
 
   const [books, setBooks] = useState([]);
+  const [scrollRef, setScrollRef] = useState(null);
 
   useEffect(() => {
     getBooks().then((result) => {
@@ -37,8 +29,13 @@ export default function BibleScreen({navigation, route}) {
     });
   }, []);
 
+  handleAutomaticSelect = () => {
+    //scrollRef?.scrollToIndex({index:10});
+  }
+
   return (
     <FlatList contentContainerStyle={styles.ctn}
+        ref={ref => {this.scrollView = ref; setScrollRef(ref);}}
         keyboardDismissMode='on-drag' 
         keyboardShouldPersistTaps='always'
         ListHeaderComponent={() => {
@@ -59,7 +56,18 @@ export default function BibleScreen({navigation, route}) {
         }}
         data={books}
         keyExtractor={(item) => item.name}
-        renderItem={ ({item}) => <BibleBook abrev={item.abbrev.pt} label={item.name} chapters={item.chapters}/>}
+        renderItem={({item}) => {
+          return (
+            <BibleBook abrev={item.abbrev.pt} 
+                label={item.name} 
+                chapters={item.chapters}
+                verse={verse}
+                chapter={chapter}
+                expand={item.name === book}
+                onAutomaticSelect={handleAutomaticSelect}
+            />
+          )
+        }}
     />
   )
 }
