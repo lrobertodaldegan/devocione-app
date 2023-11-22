@@ -8,6 +8,7 @@ import {StatusBar}from 'react-native';
 import {Colors} from './src/utils/Colors';
 import HomeScreen from './src/screen/HomeScreen';
 import DevocionalScreen from './src/screen/DevocionalScreen';
+import BibleScreen from './src/screen/BibleScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -37,6 +38,7 @@ export default function App(): JSX.Element {
         <Stack.Navigator>
           <Stack.Screen name="Home" component={HomeScreen} options={ScreenOptions} />
           <Stack.Screen name="Devocional" component={DevocionalScreen} options={ScreenOptions} />
+          <Stack.Screen name="Bible" component={BibleScreen} options={ScreenOptions} />
         </Stack.Navigator>
       </NavigationContainer>
     </>

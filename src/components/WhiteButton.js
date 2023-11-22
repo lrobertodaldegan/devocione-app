@@ -8,11 +8,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {Colors} from '../utils/Colors';
 import Label from './Label';
 
-export default function Button({label, labelSize=18, icon, iconSize=15, action=()=>null}) {
+export default function WhiteButton({label, labelSize=18, icon, iconSize=15, action=()=>null}) {
     return (
-        <TouchableHighlight underlayColor={Colors.white} onPress={() => action()}>
+        <TouchableHighlight underlayColor={Colors.blue} onPress={() => action()}>
             <View style={styles.lblWrap}>
-                <Label value={label} style={styles.lbl} size={labelSize}/>
+                <Label value={label} style={[styles.lbl]} size={labelSize}/>
 
                 <FontAwesomeIcon icon={icon} style={[styles.icon]} size={iconSize}/>
             </View>
@@ -24,16 +24,16 @@ export default function Button({label, labelSize=18, icon, iconSize=15, action=(
 const styles = StyleSheet.create({
     lblWrap:{
         flexDirection:'row',
-        justifyContent:'center',
+        justifyContent:'flex-start',
         alignItems:'center',
         alignContent:'center'
     },
     lbl:{
-        color:Colors.blue
+        color:Colors.white
     },
     icon:{
         marginTop:5,
         marginLeft:5,
-        color:Colors.green
+        color:Colors.white
     }
 });

@@ -12,7 +12,7 @@ import Card from '../components/Card';
 import Label from '../components/Label';
 import { Colors, Days } from '../utils';
 import Button from '../components/Button';
-import { faArrowRight, faArrowRotateLeft } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRight, faArrowRotateLeft, faBook } from '@fortawesome/free-solid-svg-icons';
 import { DevocionalService } from '../service/DevocionalService';
 import ListItem from '../components/ListItem';
 import Footer from '../components/Footer';
@@ -92,11 +92,26 @@ export default function HomeScreen({navigation}) {
 
   const renderText = () => {
     if(loading === false){
-        return <Label value={`${text.content}\n\n${text.ref} NVI`} 
-                    size={18} style={styles.txt} bold={true}/>
+      return (
+        <>
+          <Label value={`${text.content}`} 
+              size={18} style={styles.txt} bold={true}/>
+
+          <View style={styles.refWrap}>
+            <Label value={`${text.ref} NVI`} 
+                size={18} style={[styles.txt, styles.ref]} bold={true}/>
+
+            <GrayButton label='Ver contexto' 
+                labelSize={14}
+                iconSize={10}
+                icon={faBook} 
+                action={() => navigation.navigate('Bible', {})}/>
+          </View>
+        </>
+      )
     } else {
-        return <ActivityIndicator style={{marginVertical:10}}
-                    size="small" color={Colors.blue} />
+      return <ActivityIndicator style={{marginVertical:10}}
+                  size="small" color={Colors.blue} />
     }
   }
 
@@ -137,7 +152,7 @@ export default function HomeScreen({navigation}) {
 
                 <Label value={`${date}`} style={styles.lbl}/>
 
-                <Label value={'Texto sugerido'} size={16} 
+                <Label value={'Texto sugerido'} size={18} 
                     style={styles.lbl}/>
 
                 {renderText()}
@@ -175,14 +190,21 @@ const styles = StyleSheet.create({
   },
   lbl:{
       color:Colors.gray,
+      textAlign:'center',
       marginTop:5,
-      textAlign:'center'
   },
   txt:{
       color:Colors.blue,
-      marginTop:10,
-      marginBottom:20,
       textAlign:'center'
+  },
+  ref:{
+    marginRight:10,
+    color:Colors.gray,
+  },
+  refWrap:{
+    flexDirection:'row',
+    alignItems:'center',
+    marginBottom:20
   },
   cardBtnWrap:{
       flexDirection:'row',

@@ -15,7 +15,7 @@ const getDt = () => {
 
 const getRandomVerse = async (errorHandler=()=>null) => {
   return get('https://www.abibliadigital.com.br/api/verses/nvi/random', 
-      errorHandler, HEADERS)
+              errorHandler, HEADERS)
   .then(async (response) => {
     let result = {status:response.status, content:{...response.data}, dt:getDt()};
 
@@ -42,4 +42,19 @@ const getVerseFromCache = async () => {
   return await getRandomVerse();
 }
 
-export { getRandomVerse, getVerseFromCache }
+const getBooks = (errorHandler=()=>null) => {
+  return get('https://www.abibliadigital.com.br/api/books', errorHandler, HEADERS)
+  .then(async (response) => {
+    return {status:response.status, books:[...response.data]};
+  });
+}
+
+const getChapter = (abrev, chap, errorHandler=()=>null) => {
+  return get(`https://www.abibliadigital.com.br/api/verses/nvi/${abrev}/${chap}`, 
+              errorHandler, HEADERS)
+  .then(async (response) => {
+    return {status:response.status, content:{...response.data}};
+  });
+}
+
+export { getRandomVerse, getVerseFromCache, getBooks, getChapter }
