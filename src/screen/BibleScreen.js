@@ -4,14 +4,14 @@ import {
     StyleSheet,
     TouchableHighlight,
     FlatList,
+    View,
 }from 'react-native';
-import { Colors, Days } from '../utils';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { Colors } from '../utils';
+import { faArrowLeft, faBook } from '@fortawesome/free-solid-svg-icons';
 import { getBooks } from '../service/BibleService'; 
 import BibleBook from '../components/BibleBook';
 import Icon from '../components/Icon';
 import { BannerAd,BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
-import { useScrollToTop } from '@react-navigation/native';
 
 const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-2420598559068720/7564787951';
 
@@ -20,22 +20,22 @@ export default function BibleScreen({navigation, route}) {
   const { book, chapter, verse } = route.params;
 
   const [books, setBooks] = useState([]);
-  const [scrollRef, setScrollRef] = useState(null);
+  const [showAllBooks, setShowAllBooks] = useState(true);
 
   useEffect(() => {
     getBooks().then((result) => {
       if(result.status === 200)
         setBooks(result.books);
-    });
-  }, []);
 
-  handleAutomaticSelect = () => {
-    //scrollRef?.scrollToIndex({index:10});
-  }
+      if(book && chapter && verse)
+        setShowAllBooks(false);
+    });
+
+
+  }, []);
 
   return (
     <FlatList contentContainerStyle={styles.ctn}
-        ref={ref => {this.scrollView = ref; setScrollRef(ref);}}
         keyboardDismissMode='on-drag' 
         keyboardShouldPersistTaps='always'
         ListHeaderComponent={() => {
@@ -47,26 +47,48 @@ export default function BibleScreen({navigation, route}) {
                 requestOptions={{requestNonPersonalizedAdsOnly: false,}}
               />
 
-              <TouchableHighlight underlayColor={Colors.blue} 
-                      onPress={() => navigation.goBack()} style={styles.goBackWrap}>
-                  <Icon icon={faArrowLeft} label='Voltar' />
-              </TouchableHighlight>
+              <View style={styles.headerBtnsWrap}>
+                <TouchableHighlight underlayColor={Colors.blue} 
+                        onPress={() => navigation.goBack()} style={styles.goBackWrap}>
+                    <Icon icon={faArrowLeft} label='Voltar' />
+                </TouchableHighlight>
+
+                <TouchableHighlight underlayColor={Colors.blue} 
+                        onPress={() => showAllBooks(true)} style={styles.goBackWrap}>
+                    <Icon icon={faBook} label='Ver todos os livros' />
+                </TouchableHighlight>
+              </View>
             </>
           )
         }}
         data={books}
         keyExtractor={(item) => item.name}
         renderItem={({item}) => {
-          return (
-            <BibleBook abrev={item.abbrev.pt} 
-                label={item.name} 
-                chapters={item.chapters}
-                verse={verse}
-                chapter={chapter}
-                expand={item.name === book}
-                onAutomaticSelect={handleAutomaticSelect}
-            />
-          )
+          if(showAllBooks === false){
+            if(book && book === item.name){
+              return (
+                <BibleBook abrev={item.abbrev.pt} 
+                    label={item.name} 
+                    chapters={item.chapters}
+                    verse={verse}
+                    chapter={chapter}
+                    expand={item.name === book}
+                />
+              )
+            } else {
+              return <></>
+            }
+          } else {
+            return (
+              <BibleBook abrev={item.abbrev.pt} 
+                  label={item.name} 
+                  chapters={item.chapters}
+                  verse={verse}
+                  chapter={chapter}
+                  expand={item.name === book}
+              />
+            )
+          }
         }}
     />
   )
@@ -81,7 +103,10 @@ const styles = StyleSheet.create({
     paddingHorizontal:10
   },
   goBackWrap:{
-    width:30,
     marginVertical:20,
+  },
+  headerBtnsWrap:{
+    flex:'row',
+    justifyContent:'space-between'
   },
 });

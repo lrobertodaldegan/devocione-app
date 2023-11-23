@@ -26,7 +26,7 @@ export default function BibleBookChapter({chapter, selected=false, onSelection=(
           onPress={handleSelection} 
           style={[styles.chapOpt, selected === true ? styles.chapSelected : {}]}>
         
-        <Label key={chapter} value={`${chapter}`} size={20}/>
+        <Label key={chapter} value={`${chapter}`} size={18}/>
       </TouchableHighlight>
     </View>
   )

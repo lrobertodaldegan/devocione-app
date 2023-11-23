@@ -14,7 +14,6 @@ import { DevocionalService } from '../service/DevocionalService';
 import Footer from '../components/Footer';
 import Input from '../components/Input';
 import PrayReasons from '../components/PrayReasons';
-import { initialWindowMetrics } from 'react-native-safe-area-context';
 
 export default function DevocionalScreen({navigation, route}) {
 
