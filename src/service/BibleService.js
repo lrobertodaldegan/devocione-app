@@ -19,14 +19,14 @@ const getRandomVerse = async (errorHandler=()=>null) => {
   .then(async (response) => {
     let result = {status:response.status, content:{...response.data}, dt:getDt()};
 
-    await saveText(result);
+    await save('@bible_text', result);
 
     return result;
   });
 }
 
-const saveText = async (response) => {
-  return await CacheService.register('@bible_text', JSON.stringify(response));
+const save = async (key, response) => {
+  return await CacheService.register(key, JSON.stringify(response));
 }
 
 const getVerseFromCache = async () => {
@@ -42,19 +42,42 @@ const getVerseFromCache = async () => {
   return await getRandomVerse();
 }
 
-const getBooks = (errorHandler=()=>null) => {
-  return get('https://www.abibliadigital.com.br/api/books', errorHandler, HEADERS)
-  .then(async (response) => {
-    return {status:response.status, books:[...response.data]};
-  });
+const getBooks = async (errorHandler=()=>null) => {
+  let books = await CacheService.get('@bible_books');
+
+  if(books && books !== null){
+    return JSON.parse(books);
+  } else {
+    return get('https://www.abibliadigital.com.br/api/books', 
+                errorHandler, HEADERS)
+    .then(async (response) => {
+      let books = {status:response.status, books:[...response.data]};
+
+      await save('@bible_books', books);
+
+      return books;
+    });
+  }
 }
 
-const getChapter = (abrev, chap, errorHandler=()=>null) => {
-  return get(`https://www.abibliadigital.com.br/api/verses/nvi/${abrev}/${chap}`, 
-              errorHandler, HEADERS)
-  .then(async (response) => {
-    return {status:response.status, content:{...response.data}};
-  });
+const getChapter = async (abrev, chap, errorHandler=()=>null) => {
+  let key = `@bible_book_${abrev}${chap}`;
+
+  let chapter = await CacheService.get(key);
+
+  if(chapter && chapter !== null){
+    return JSON.parse(chapter);
+  } else {
+    return get(`https://www.abibliadigital.com.br/api/verses/nvi/${abrev}/${chap}`, 
+                errorHandler, HEADERS)
+    .then(async (response) => {
+      let result = {status:response.status, content:{...response.data}};
+
+      await save(key, result);
+
+      return result;
+    });
+  }
 }
 
 export { getRandomVerse, getVerseFromCache, getBooks, getChapter }

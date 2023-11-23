@@ -9,7 +9,7 @@ import {Colors} from '../utils/Colors';
 import Label from './Label';
 import ShareButton from './ShareButton';
 
-export default function ListItem({navigation, item}) {
+export default function ListItem({navigation, item, details}) {
   const renderResume = () => {
     if(item.msg)
       return item.msg;
@@ -63,7 +63,7 @@ export default function ListItem({navigation, item}) {
 
   return (
     <TouchableHighlight underlayColor={Colors.white} 
-        onPress={() => navigation.navigate('Devocional', {devocional:item})}>
+        onPress={() => navigation.navigate('Devocional', {devocional:item, details:details})}>
       <View style={styles.ctn} elevation={2}>
           <Label style={[styles.lbl]} value={`${item.dt}`}/>
 
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
         width:screen.width - 20,
         minHeight:100,
         marginLeft:10,
-        marginBottom:10,
+        marginTop:10,
         borderRadius:10,
         backgroundColor:Colors.white,
         paddingVertical:20,

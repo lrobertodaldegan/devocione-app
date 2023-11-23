@@ -14,10 +14,11 @@ import { DevocionalService } from '../service/DevocionalService';
 import Footer from '../components/Footer';
 import Input from '../components/Input';
 import PrayReasons from '../components/PrayReasons';
+import BibleVerse from '../components/BibleVerse';
 
 export default function DevocionalScreen({navigation, route}) {
 
-  const { text, dt, ref, devocional } = route.params;
+  const { text, dt, ref, devocional, details } = route.params;
 
   const [margin, setMargin] = useState(0);
   const [msg, setMsg] = useState(null);
@@ -88,8 +89,7 @@ export default function DevocionalScreen({navigation, route}) {
                   multiline={true}
               />
 
-              <Label value={devocional ? devocional.txt : text} size={18} 
-                  style={styles.txt} bold={true}/>
+              <BibleVerse navigation={navigation} text={details} />
 
               <Input label={'Qual a mensagem central do texto?'}
                   value={msg}

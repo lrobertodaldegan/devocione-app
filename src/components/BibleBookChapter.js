@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
     StyleSheet,
     View,
@@ -7,7 +7,6 @@ import {
 }from 'react-native';
 import {Colors} from '../utils/Colors';
 import Label from './Label';
-import { getChapter } from '../service/BibleService';
 
 export default function BibleBookChapter({chapter, selected=false, onSelection=(chapterSelected)=>null}) {
   const [expanded, setExpanded] = useState(false);

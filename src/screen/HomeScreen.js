@@ -12,13 +12,14 @@ import Card from '../components/Card';
 import Label from '../components/Label';
 import { Colors, Days } from '../utils';
 import Button from '../components/Button';
-import { faArrowRight, faArrowRotateLeft, faBook } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRight, faArrowRotateLeft, faBook, faQuoteRight } from '@fortawesome/free-solid-svg-icons';
 import { DevocionalService } from '../service/DevocionalService';
 import ListItem from '../components/ListItem';
 import Footer from '../components/Footer';
 import { getRandomVerse, getVerseFromCache } from '../service/BibleService'; 
 import GrayButton from '../components/GrayButton';
 import { useIsFocused } from '@react-navigation/native';
+import BibleVerse from '../components/BibleVerse';
 
 export default function HomeScreen({navigation}) {
   const [margin, setMargin] = useState(0);
@@ -96,23 +97,7 @@ export default function HomeScreen({navigation}) {
 
   const renderText = () => {
     if(loading === false){
-      return (
-        <>
-          <Label value={`${text.content}`} 
-              size={18} style={styles.txt} bold={true}/>
-
-          <View style={styles.refWrap}>
-            <Label value={`${text.ref} NVI`} 
-                size={18} style={[styles.txt, styles.ref]} bold={true}/>
-
-            <GrayButton label='Ver contexto' 
-                labelSize={14}
-                iconSize={10}
-                icon={faBook} 
-                action={() => navigation.navigate('Bible', {book:text.book, chapter:text.chapter, verse:text.verse})}/>
-          </View>
-        </>
-      )
+      return <BibleVerse navigation={navigation} text={text} />
     } else {
       return <ActivityIndicator style={{marginVertical:10}}
                   size="small" color={Colors.blue} />
@@ -122,20 +107,35 @@ export default function HomeScreen({navigation}) {
   const renderTextActions = () => {
     if(text.success && text.success === true){
       return (
-        <View style={styles.cardBtnWrap}>
-          <GrayButton label='Mudar sugestão' 
-              labelSize={16}
-              iconSize={10}
-              icon={faArrowRotateLeft} 
-              action={() => getVerse(true)}/>
-          
+        <>
+          <View style={styles.cardBtnWrap}>
+            <GrayButton label='Mudar sugestão' 
+                labelSize={16}
+                iconSize={10}
+                icon={faArrowRotateLeft} 
+                action={() => getVerse(true)}/>
+            
+            <GrayButton label='Escolher versículo' icon={faQuoteRight} 
+                action={() => navigation.navigate('Bible', {selectable:true})}/>
+          </View>
+
           <Button label='Iniciar' icon={faArrowRight} 
-              action={() => navigation.navigate('Devocional', {dt:date, ref:text.ref, text:`${text.content}\n\n${text.ref} NVI`})}/>
-        </View>
+              action={() => navigation.navigate('Devocional', {
+                dt:date, 
+                ref:text.ref, 
+                text:`${text.content}\n\n${text.ref} NVI`,
+                details:text
+              })}
+          />
+        </>
       );
     } else {
       <></>
     }
+  }
+
+  const renderListItem = ({item}) => {
+    return <ListItem navigation={navigation} item={item} details={text}/>
   }
 
   return (
@@ -174,7 +174,7 @@ export default function HomeScreen({navigation}) {
         keyExtractor={(item) => item.id}
         ListEmptyComponent={<View style={styles.emptyCtn}></View>}
         ListFooterComponent={<Footer/>}
-        renderItem={ ({item}) => <ListItem navigation={navigation} item={item}/>}
+        renderItem={renderListItem}
     />
   )
 }
@@ -211,9 +211,10 @@ const styles = StyleSheet.create({
     marginBottom:20
   },
   cardBtnWrap:{
-      flexDirection:'row',
-      alignItems:'center',
-      width:screen.width * 0.6,
-      justifyContent:'space-between'
+    flexDirection:'row',
+    alignItems:'center',
+    width:screen.width * 0.75,
+    justifyContent:'space-between',
+    marginBottom:20
   },
 });
