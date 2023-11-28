@@ -97,7 +97,14 @@ export default function HomeScreen({navigation}) {
 
   const renderText = () => {
     if(loading === false){
-      return <BibleVerse navigation={navigation} text={text} />
+      if(text.success === true)
+        return <BibleVerse navigation={navigation} text={text} />
+      
+      return <GrayButton label='Algo deu erro! Tente novamente' 
+                labelSize={16}
+                iconSize={10}
+                icon={faArrowRotateLeft} 
+                action={() => getVerse(true)}/>
     } else {
       return <ActivityIndicator style={{marginVertical:10}}
                   size="small" color={Colors.blue} />
