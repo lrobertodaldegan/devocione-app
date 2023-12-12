@@ -5,6 +5,7 @@ import {
     View,
     ScrollView,
     TextInput,
+    Switch,
 } from 'react-native';
 import Header from '../components/Header';
 import Card from '../components/Card';
@@ -15,6 +16,7 @@ import Footer from '../components/Footer';
 import Input from '../components/Input';
 import PrayReasons from '../components/PrayReasons';
 import BibleVerse from '../components/BibleVerse';
+import TextArea from '../components/TextArea';
 
 export default function DevocionalScreen({navigation, route}) {
 
@@ -27,6 +29,7 @@ export default function DevocionalScreen({navigation, route}) {
   const [title, setTitle] = useState(null);
   const [revelation, setRevelation] = useState(null);
   const [application, setApplication] = useState(null);
+  const [showTopics, setShowTopics] = useState(false);
 
   useEffect(() => {
     init();
@@ -65,6 +68,39 @@ export default function DevocionalScreen({navigation, route}) {
     .then(() => navigation.navigate('Home'));
   }
 
+  const renderInputs = () => {
+    if(showTopics === false){
+      return (
+        <>
+          <Input label={'Qual a mensagem central do texto?'}
+              value={msg}
+              onChange={(val) => setMsg(val)}/>
+
+          <Input label={'Qual o contexto?'}
+              value={ctx}
+              onChange={(val) => setCtx(val)}/>
+
+          <Input label={'Como o texto revela Jesus?'}
+              value={revelation}
+              onChange={(val) => setRevelation(val)}/>
+
+          <Input label={'Como aplicar a mensagem ao meu dia-a-dia?'}
+              value={application}
+              onChange={(val) => setApplication(val)}/>
+
+          <Input label={'Minha oração'}
+              value={pray}
+              onChange={(val) => setPray(val)}/>
+        </>
+      )
+    } else {
+      return (
+        <TextArea value={msg}
+            onChange={(val) => setMsg(val)}/>
+      )
+    }
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.ctn} 
         keyboardShouldPersistTaps='always'>
@@ -91,25 +127,19 @@ export default function DevocionalScreen({navigation, route}) {
 
               <BibleVerse navigation={navigation} text={details} />
 
-              <Input label={'Qual a mensagem central do texto?'}
-                  value={msg}
-                  onChange={(val) => setMsg(val)}/>
+              <View style={styles.toggleWrap}>
+                <Switch
+                    trackColor={{false: Colors.lightGray, true: Colors.blue}}
+                    thumbColor={Colors.white}
+                    ios_backgroundColor={Colors.white}
+                    onValueChange={setShowTopics}
+                    value={showTopics}/>
 
-              <Input label={'Qual o contexto?'}
-                  value={ctx}
-                  onChange={(val) => setCtx(val)}/>
+                <Label value={showTopics === true ? `Texto livre` : 'Tópicos'} 
+                    style={styles.toggleLbl} size={14}/>
+              </View>
 
-              <Input label={'Como o texto revela Jesus?'}
-                  value={revelation}
-                  onChange={(val) => setRevelation(val)}/>
-
-              <Input label={'Como aplicar a mensagem ao meu dia-a-dia?'}
-                  value={application}
-                  onChange={(val) => setApplication(val)}/>
-
-              <Input label={'Minha oração'}
-                  value={pray}
-                  onChange={(val) => setPray(val)}/>
+              {renderInputs()}
 
               <PrayReasons />
             </View>
@@ -151,5 +181,14 @@ const styles = StyleSheet.create({
     fontFamily:'JosefinSans-Bold',
     fontSize:18,
     textAlign:'center'
-  }
+  },
+  toggleWrap:{
+    alignItems:'center',
+    flexDirection:'row',
+    marginVertical:10,
+  },
+  toggleLbl:{
+    color:Colors.gray,
+    marginLeft:5
+  },
 });

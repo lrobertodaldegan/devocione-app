@@ -25,6 +25,18 @@ const getRandomVerse = async (errorHandler=()=>null) => {
   });
 }
 
+const changeChosedVerse = async (verse) => {
+  if(verse && verse !== null){
+    let result = {status:200, content:{...verse}, dt:getDt()};
+
+    await save('@bible_text', result);
+
+    return result;
+  }
+
+  return null;
+}
+
 const save = async (key, response) => {
   return await CacheService.register(key, JSON.stringify(response));
 }
@@ -80,4 +92,10 @@ const getChapter = async (abrev, chap, errorHandler=()=>null) => {
   }
 }
 
-export { getRandomVerse, getVerseFromCache, getBooks, getChapter }
+export { 
+  getRandomVerse, 
+  getVerseFromCache, 
+  getBooks, 
+  getChapter, 
+  changeChosedVerse 
+}

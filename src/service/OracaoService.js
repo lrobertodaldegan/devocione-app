@@ -39,7 +39,9 @@ export const OracaoService = {
     if(oracoes && oracoes !== null && oracoes.length > 0){
       let oracao = oracoes.filter((o) => o.reason === id);
 
-      oracoes.splice(oracao[0], 1);
+      let pos = oracoes.indexOf(oracao[0]);
+
+      oracoes.splice(pos, 1);
       
       return await CacheService.register(KEY, JSON.stringify(oracoes));
     }

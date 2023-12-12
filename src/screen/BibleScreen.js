@@ -6,7 +6,7 @@ import {
     ActivityIndicator,
 }from 'react-native';
 import { Colors } from '../utils';
-import { getBooks } from '../service/BibleService'; 
+import { changeChosedVerse, getBooks } from '../service/BibleService'; 
 import BibleBook from '../components/BibleBook';
 import BibleHeader from '../components/BibleHeader';
 
@@ -26,6 +26,12 @@ export default function BibleScreen({navigation, route}) {
         setShowAllBooks(false);
     });
   }, []);
+
+  const handleSelection = (txt) => {
+    changeChosedVerse(txt)
+      .then(() => navigation.navigate('Devocional', txt))
+      .catch(() => navigation.navigate('Devocional', txt));
+  }
 
   const renderListItem = ({item}) => {
     if(showAllBooks === false){
@@ -52,7 +58,7 @@ export default function BibleScreen({navigation, route}) {
             chapter={chapter}
             expand={item.name === book}
             selectable={selectable === true}
-            onVerseSelect={(txt) => navigation.navigate('Devocional', txt)}
+            onVerseSelect={handleSelection}
         />
       )
     }

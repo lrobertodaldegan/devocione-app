@@ -13,7 +13,7 @@ import { OracaoService } from '../service/OracaoService';
 
 export default function PrayReasons() {
   const [expanded, setExpanded] = useState(true);
-  const [icon, setIcon] = useState(faChevronDown);
+  const [icon, setIcon] = useState(faChevronUp);
   const [reasons, setReasons] = useState([]);
 
   useEffect(() => {

@@ -3,6 +3,7 @@ import {
     StyleSheet,
     TouchableHighlight,
     View,
+    Dimensions,
 }from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {Colors} from '../utils/Colors';
@@ -51,10 +52,10 @@ export default function CheckBox({
       <TouchableHighlight underlayColor={Colors.white} 
           onPress={() => onDeletion(label)}>
 
-        <FontAwesomeIcon icon={faX} size={12} 
+        <FontAwesomeIcon icon={faX} size={14} 
             style={[
               styles.icon,
-              {color:selected === true ? Colors.lightGray : Colors.gray},
+              {color:Colors.red},
               {marginLeft:10}
             ]}
         />
@@ -73,7 +74,8 @@ const styles = StyleSheet.create({
     marginVertical:5
   },
   lbl:{
-    color:Colors.gray
+    color:Colors.gray,
+    width: Dimensions.get('screen').width * 0.6
   },
   icon:{
     marginTop:5,

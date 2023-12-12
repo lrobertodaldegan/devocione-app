@@ -117,12 +117,13 @@ export default function HomeScreen({navigation}) {
         <>
           <View style={styles.cardBtnWrap}>
             <GrayButton label='Mudar sugestão' 
-                labelSize={16}
+                labelSize={14}
                 iconSize={10}
                 icon={faArrowRotateLeft} 
                 action={() => getVerse(true)}/>
             
             <GrayButton label='Escolher versículo' icon={faQuoteRight} 
+                labelSize={14}
                 action={() => navigation.navigate('Bible', {selectable:true})}/>
           </View>
 
@@ -142,7 +143,30 @@ export default function HomeScreen({navigation}) {
   }
 
   const renderListItem = ({item}) => {
-    return <ListItem navigation={navigation} item={item} details={text}/>
+    let a = item.ref.split(" ").reverse();
+
+    let b = '';
+
+    for(let i=1; i < a.length; i++){
+      b += `${a[i]} `;
+    }
+
+    let cv = a[0].split(":");
+
+    let c = cv[0];
+    let v = cv[1];
+
+    let content = item.txt.split("\n")[0];
+
+    let det = {
+      ...item,
+      content:content,
+      book:b.trim(),
+      chapter:+c,//passa transformando string em int
+      verse:+v//passa transformando string em int
+    }
+
+    return <ListItem navigation={navigation} item={item} details={det}/>
   }
 
   return (

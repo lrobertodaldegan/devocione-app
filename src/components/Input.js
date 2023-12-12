@@ -10,7 +10,7 @@ import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 
 export default function Input({label, value, onChange=(val)=>null}) {
   const [expanded, setExpanded] = useState(true);
-  const [icon, setIcon] = useState(faChevronDown);
+  const [icon, setIcon] = useState(faChevronUp);
 
   const renderInput = () => {
     if(expanded === true){
