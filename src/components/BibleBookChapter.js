@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     marginTop:10
   },
   chapOpt:{
-    width: (screen.width - 20) * 0.1,
+    width: (screen.width - 20) * 0.1267,
     height: 40,
     borderRadius:5,
     backgroundColor:Colors.lightBlue,

@@ -4,11 +4,15 @@ import {
     StyleSheet,
     FlatList,
     ActivityIndicator,
+    View,
 }from 'react-native';
 import { Colors } from '../utils';
 import { changeChosedVerse, getBooks } from '../service/BibleService'; 
 import BibleBook from '../components/BibleBook';
 import BibleHeader from '../components/BibleHeader';
+import Label from '../components/Label';
+import { BannerAd,BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-2420598559068720/1717135646';
 
 export default function BibleScreen({navigation, route}) {
 
@@ -69,10 +73,16 @@ export default function BibleScreen({navigation, route}) {
         keyboardDismissMode='on-drag' 
         keyboardShouldPersistTaps='always'
         ListHeaderComponent={
-          <BibleHeader navigation={navigation}
-              showlAllOptionEnabled={!showAllBooks}
-              onShowAll={() => setShowAllBooks(!showAllBooks)}
-          />
+          <>
+            <BibleHeader navigation={navigation}
+                showlAllOptionEnabled={!showAllBooks}
+                onShowAll={() => setShowAllBooks(!showAllBooks)}
+            />
+
+            <View styles={styles.versionWrap}>
+              <Label value='Versão: NVI' style={{textAlign:'center'}}/>
+            </View>
+          </>
         }
         data={books}
         keyExtractor={(item) => item.name}
@@ -81,6 +91,18 @@ export default function BibleScreen({navigation, route}) {
           <ActivityIndicator color={Colors.white} 
               style={{marginVertical:10}} size="small"
           />
+        }
+        ListFooterComponent={
+          <View style={{alignItems:'center', marginTop:20}}>
+            <BannerAd
+              unitId={adUnitId}
+              size={BannerAdSize.MEDIUM_RECTANGLE}
+              requestOptions={{requestNonPersonalizedAdsOnly: false,}}
+            />
+
+            <Label value='Por @lucasrobertodev' 
+                style={{textAlign:'center', margin:20}}/>
+          </View>
         }
     />
   )
@@ -93,5 +115,10 @@ const styles = StyleSheet.create({
     minHeight:screen.height,
     backgroundColor:Colors.blue,
     paddingHorizontal:10
-  }
+  },
+  versionWrap:{
+    alignItems:'center',
+    justifyContent:'center',
+    width:screen.width,
+  },
 });

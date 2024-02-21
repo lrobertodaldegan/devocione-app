@@ -1,6 +1,6 @@
-import { get } from "../utils/Rest";
+import { get, post } from "../utils/Rest";
 import CacheService from "./CacheService";
-import { Days } from "../utils";
+import { Days, Verses } from "../utils";
 
 const HEADERS = {
   'X-Requested-With': 'XMLHttpRequest',
@@ -14,14 +14,32 @@ const getDt = () => {
 }
 
 const getRandomVerse = async (errorHandler=()=>null) => {
-  return get('https://www.abibliadigital.com.br/api/verses/nvi/random', 
-              errorHandler, HEADERS)
+
+  let index = Math.floor(Math.random() * Verses.length);
+
+  let text = Verses[index];
+
+  let path = `${text.abbrev}/${text.chap}/${text.verse}`;
+
+  let url = `https://www.abibliadigital.com.br/api/verses/nvi/${path}`;
+
+  return get(url, errorHandler, HEADERS)
   .then(async (response) => {
     let result = {status:response.status, content:{...response.data}, dt:getDt()};
 
     await save('@bible_text', result);
 
     return result;
+  }).catch((err) => {
+    get('https://www.abibliadigital.com.br/api/verses/nvi/random', 
+                errorHandler, HEADERS)
+    .then(async (response) => {
+      let result = {status:response.status, content:{...response.data}, dt:getDt()};
+
+      await save('@bible_text', result);
+
+      return result;
+    });
   });
 }
 
@@ -92,10 +110,23 @@ const getChapter = async (abrev, chap, errorHandler=()=>null) => {
   }
 }
 
+const searchVerses = async (word, errorHandler=()=>null) => {
+  let body = {
+    version:'nvi',
+    search:word
+  }
+
+  return post('https://www.abibliadigital.com.br/api/verses/search', 
+                body, errorHandler, HEADERS).then((response) => {
+    return response?.data?.verses;
+  });
+}
+
 export { 
   getRandomVerse, 
   getVerseFromCache, 
   getBooks, 
   getChapter, 
-  changeChosedVerse 
+  changeChosedVerse,
+  searchVerses,
 }

@@ -7,6 +7,9 @@ import {
 import {Colors} from '../utils/Colors';
 import Label from './Label';
 import { Days } from '../utils';
+import ShareButton from './ShareButton';
+import Button from './Button';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
 export default function BibleBookVerse({
                                 book,
@@ -47,20 +50,44 @@ export default function BibleBookVerse({
   }
   
   return (
-    <TouchableHighlight underlayColor={Colors.white} 
-        onPress={handleSelection}>
+    <>
+      <TouchableHighlight underlayColor={Colors.white} 
+          onPress={handleSelection}>
 
-      <View style={styles.wrap}>
-        <Label key={chapterVerse.number} size={20} 
-            value={`${chapterVerse.number} ${chapterVerse.text}`} 
-            style={[
-              styles.verseLbl, 
-              bold ? {fontFamily:'JosefinSans-Regular'} : {}
-            ]}
+        <View style={styles.wrap}>
+          <Label key={chapterVerse.number} size={20} 
+              value={`${chapterVerse.number} ${chapterVerse.text}`} 
+              style={[
+                styles.verseLbl, 
+                bold ? {fontFamily:'JosefinSans-Regular'} : {}
+              ]}
+              />
+        </View>
+      </TouchableHighlight>
+
+      <View style={styles.listItemActionsWrap}>
+        <ShareButton
+            message={`${book} ${chapter}:${chapterVerse.number}:\n${chapterVerse.text}`}/>
+
+        <Button label='Iniciar devocional' icon={faArrowRight} 
+            labelSize={14} iconSize={12}
+            action={() => navigation.navigate('Devocional', {
+              dt:date, 
+              ref:`${book} ${chapter}:${chapterVerse.number}`, 
+              text:`${chapterVerse.text}\n\n${book} ${chapter}:${chapterVerse.number} NVI`,
+              details:{
+                ref:`${book} ${chapter}:${chapterVerse.number}`,
+                content:chapterVerse.text,
+                book:book,
+                abrev:abrev,
+                chapter:chapter,
+                verse:chapterVerse.number,
+                success:true
+              }
+            })}
         />
       </View>
-
-    </TouchableHighlight>
+    </>
   );
 }
 
@@ -73,5 +100,12 @@ const styles = StyleSheet.create({
     color:Colors.darkGray,
     fontFamily:'JosefinSans-Light',
     marginBottom:5
+  },
+  listItemActionsWrap:{
+    flexDirection:'row',
+    flexWrap:'wrap',
+    marginVertical:10,
+    justifyContent:'space-between',
+    alignItems:'center'
   },
 });

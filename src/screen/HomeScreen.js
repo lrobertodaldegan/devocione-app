@@ -6,13 +6,26 @@ import {
     ActivityIndicator,
     FlatList,
     RefreshControl,
+    TouchableHighlight,
+    Linking,
 }from 'react-native';
+import Icon from '../components/Icon';
 import Header from '../components/Header';
 import Card from '../components/Card';
 import Label from '../components/Label';
 import { Colors, Days } from '../utils';
 import Button from '../components/Button';
-import { faArrowRight, faArrowRotateLeft, faBook, faQuoteRight } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faAddressCard, 
+  faArrowRight,
+  faArrowRotateLeft, 
+  faBible, 
+  faMobileScreenButton, 
+  faQuoteRight, 
+  faSearch, 
+  faX, 
+  faSort 
+} from '@fortawesome/free-solid-svg-icons';
 import { DevocionalService } from '../service/DevocionalService';
 import ListItem from '../components/ListItem';
 import Footer from '../components/Footer';
@@ -20,6 +33,8 @@ import { getRandomVerse, getVerseFromCache } from '../service/BibleService';
 import GrayButton from '../components/GrayButton';
 import { useIsFocused } from '@react-navigation/native';
 import BibleVerse from '../components/BibleVerse';
+import { BannerAd,BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-2420598559068720/1717135646';
 
 export default function HomeScreen({navigation}) {
   const [margin, setMargin] = useState(0);
@@ -28,8 +43,14 @@ export default function HomeScreen({navigation}) {
   const [loading, setLoading] = useState(true);
   const [loadingDevocionais, setLoadingDevocionais] = useState(true);
   const [devocionais, setDevocionais] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [reverse, setReverse] = useState(false);
 
   const isFocused = useIsFocused();
+
+  useEffect(() => {
+    setShowModal(false);
+  }, []);
 
   useEffect(() => {
     let d = new Date();
@@ -57,7 +78,7 @@ export default function HomeScreen({navigation}) {
   const handleVerseLoading = (result) => {
     let t = null;
 
-    if(result.status === 200){
+    if(result && result.status === 200){
         t = {
           ref:`${result.content.book.name} ${result.content.chapter}:${result.content.number}`,
           content:result.content.text,
@@ -169,44 +190,104 @@ export default function HomeScreen({navigation}) {
     return <ListItem navigation={navigation} item={item} details={det}/>
   }
 
-  return (
-    <FlatList contentContainerStyle={styles.ctn}
-        keyboardDismissMode='on-drag' 
-        keyboardShouldPersistTaps='always'
-        refreshControl={
-          <RefreshControl refreshing={loadingDevocionais} 
-              onRefresh={loadDevocionais} />
-        }
-        ListHeaderComponent={
-          <View style={styles.listHeaderCtn}>
-            <Header navigation={navigation}/>
+  const renderModalMenu = () => {
+    if(showModal === true){
+      return (
+        <View style={styles.modalWrap}>
+            
+            <TouchableHighlight underlayColor={'transparent'} 
+                style={styles.closeModal} onPress={()=>setShowModal(false)}>
+              <Icon icon={faX} label='Fechar menu' style={styles.closeModalIcon}/>
+            </TouchableHighlight>
 
-            <Card content={
-              <View style={styles.cardContent} 
-                  onLayout={(ev) => ajustLayout(ev.nativeEvent.layout)}>
+          <View style={styles.menu}>
+            <TouchableHighlight underlayColor={Colors.white} 
+                style={styles.menuBtn}
+                onPress={()=>navigation.navigate('Bible', {selectable:true})}>
+              <Icon icon={faBible} label='Abrir Bíblia' />
+            </TouchableHighlight>
 
-                <Label value={`${date}`} style={styles.lbl}/>
+            <TouchableHighlight underlayColor={Colors.white} 
+                style={styles.menuBtn}
+                onPress={()=>navigation.navigate('Search')}>
+              <Icon icon={faSearch} label='Pesquisa bíblica' />
+            </TouchableHighlight>
 
-                <Label value={'Texto sugerido'} size={18} 
-                    style={styles.lbl}/>
+            <TouchableHighlight underlayColor={Colors.white} 
+                style={styles.menuBtn}
+                onPress={()=>Linking.openURL('https://play.google.com/store/apps/developer?id=Lucas+Roberto+Daldegan')}>
+              <Icon icon={faMobileScreenButton} label='Nossos apps' />
+            </TouchableHighlight>
 
-                {renderText()}
-                
-                {renderTextActions()}
-              </View>
-            }/>
-
-            <Label value={'Meus devocionais'} 
-                size={18} bold={true}
-                style={[styles.txt, {marginTop:margin}]} />
+            <TouchableHighlight underlayColor={Colors.white} 
+                style={styles.menuBtn}
+                onPress={()=>navigation.navigate('About')}>
+              <Icon icon={faAddressCard} label='Sobre nós' />
+            </TouchableHighlight>
           </View>
-        }
-        data={devocionais}
-        keyExtractor={(item) => item.id}
-        ListEmptyComponent={<View style={styles.emptyCtn}></View>}
-        ListFooterComponent={<Footer/>}
-        renderItem={renderListItem}
-    />
+
+          <TouchableHighlight underlayColor={Colors.white} 
+              style={{marginBottom:30}}
+              onPress={()=>Linking.openURL('https://www.instagram.com/lucasrobertodev/')}>
+            <Label value={`Por @lucasrobertodev`}
+                style={{color:Colors.blue}} size={14}/>
+          </TouchableHighlight>
+
+          <BannerAd
+              unitId={adUnitId}
+              size={BannerAdSize.MEDIUM_RECTANGLE}
+              requestOptions={{requestNonPersonalizedAdsOnly: false,}}
+          />
+        </View>
+      );
+    } else {
+      return <></>
+    }
+  }
+
+  return (
+    <>
+      <FlatList contentContainerStyle={styles.ctn}
+          keyboardDismissMode='on-drag' 
+          keyboardShouldPersistTaps='always'
+          refreshControl={
+            <RefreshControl refreshing={loadingDevocionais} 
+                onRefresh={loadDevocionais} />
+          }
+          ListHeaderComponent={
+            <View style={styles.listHeaderCtn}>
+              <Header navigation={navigation} onShowModal={() => setShowModal(true)}/>
+
+              <Card content={
+                <View style={styles.cardContent} 
+                    onLayout={(ev) => ajustLayout(ev.nativeEvent.layout)}>
+
+                  <Label value={`${date}`} style={styles.lbl}/>
+
+                  <Label value={'Texto sugerido'} size={18} 
+                      style={styles.lbl}/>
+
+                  {renderText()}
+                  
+                  {renderTextActions()}
+                </View>
+              }/>
+
+              <Button action={() => {console.log(reverse); setReverse(!reverse);}} 
+                  label='Meus devocionais'
+                  icon={faSort}
+                  style={{marginTop:margin, marginBottom:10}}/>
+            </View>
+          }
+          data={reverse ? devocionais.reverse() : devocionais}
+          keyExtractor={(item) => item.id}
+          ListEmptyComponent={<View style={styles.emptyCtn}></View>}
+          ListFooterComponent={<Footer/>}
+          renderItem={renderListItem}
+      />
+
+      {renderModalMenu()}
+    </>
   )
 }
 
@@ -247,5 +328,34 @@ const styles = StyleSheet.create({
     width:screen.width * 0.75,
     justifyContent:'space-between',
     marginBottom:20
+  },
+  modalWrap:{
+    position:'absolute',
+    height:screen.height,
+    width:screen.width,
+    zIndex:100,
+    backgroundColor:'rgba(255,255,255,0.9)',
+    alignItems:'center',
+    padding:10,
+    paddingTop:screen.height * 0.18
+  },
+  menu:{
+    flexDirection:'row',
+    flexWrap:'wrap',
+    marginVertical:20,
+  },
+  menuBtn:{
+    backgroundColor:Colors.blue,
+    padding:10,
+    borderRadius:10,
+    margin:10,
+  },
+  closeModal:{
+    width:screen.width - 10,
+    alignItems:'flex-end',
+    justifyContent:'flex-end'
+  },
+  closeModalIcon:{
+    color:Colors.blue
   },
 });

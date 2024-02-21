@@ -12,7 +12,7 @@ export default function Icon({style={}, icon, label, size=20}) {
         <View style={styles.ctn}>
             <FontAwesomeIcon icon={icon} style={[styles.default, style]} size={size}/>
 
-            <Label value={label} />
+            <Label value={label} style={style}/>
         </View>
     )
 }

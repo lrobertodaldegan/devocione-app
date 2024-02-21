@@ -6,6 +6,7 @@ import {
     ScrollView,
     TextInput,
     Switch,
+    TouchableHighlight,
 } from 'react-native';
 import Header from '../components/Header';
 import Card from '../components/Card';
@@ -127,16 +128,25 @@ export default function DevocionalScreen({navigation, route}) {
 
               <BibleVerse navigation={navigation} text={details} />
 
-              <View style={styles.toggleWrap}>
-                <Switch
-                    trackColor={{false: Colors.lightGray, true: Colors.blue}}
-                    thumbColor={Colors.white}
-                    ios_backgroundColor={Colors.white}
-                    onValueChange={setShowTopics}
-                    value={showTopics}/>
+              <View style={styles.btnsWrap}>
+                <View style={styles.toggleWrap}>
+                  <Switch
+                      trackColor={{false: Colors.lightGray, true: Colors.blue}}
+                      thumbColor={Colors.white}
+                      ios_backgroundColor={Colors.white}
+                      onValueChange={setShowTopics}
+                      value={showTopics}/>
 
-                <Label value={showTopics === true ? `Texto livre` : 'Tópicos'} 
-                    style={styles.toggleLbl} size={14}/>
+                  <Label value={showTopics === true ? `Texto livre` : 'Tópicos'} 
+                      style={styles.toggleLbl} size={14}/>
+                </View>
+
+                <TouchableHighlight underlayColor={'transparent'}
+                    onPress={() => navigation.navigate('Search')}>
+
+                  <Label value={'Pesquisa bíblica'}
+                      style={styles.toggleLbl} size={14}/>
+                </TouchableHighlight>
               </View>
 
               {renderInputs()}
@@ -181,6 +191,11 @@ const styles = StyleSheet.create({
     fontFamily:'JosefinSans-Bold',
     fontSize:18,
     textAlign:'center'
+  },
+  btnsWrap:{
+    alignItems:'center',
+    justifyContent:'space-between',
+    flexDirection:'row',
   },
   toggleWrap:{
     alignItems:'center',

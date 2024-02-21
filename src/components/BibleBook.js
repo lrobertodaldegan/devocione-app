@@ -29,7 +29,6 @@ export default function BibleBook({
   const [loading, setLoading] = useState(false);
   const [chapterVerses, setChapterVerses] = useState([]);
   const [chapterSelected, setChapterSelected] = useState(null);
-  const [icon, setIcon] = useState(faChevronDown);
 
   useEffect(() => {
     if(chapter !== null && expand === true){
@@ -56,7 +55,6 @@ export default function BibleBook({
           setChapterVerses(result.content.verses);
           setShowChapterContent(true);
           setExpanded(true);
-          setIcon(faChevronUp);
         }
 
         setLoading(false);
@@ -68,8 +66,6 @@ export default function BibleBook({
     let exp = !expanded;
 
     setExpanded(exp);
-    
-    setIcon(exp === true ? faChevronUp : faChevronDown);
 
     if(exp === false){
       setShowChapterContent(false);
@@ -138,7 +134,7 @@ export default function BibleBook({
 
   return (
     <View style={styles.wrap}>
-      <WhiteButton icon={icon} label={label} 
+      <WhiteButton label={label} 
           align='flex-start'
           action={() => handlePress()}/>
 
@@ -160,7 +156,7 @@ const styles = StyleSheet.create({
     flexWrap:'wrap',
     maxWidth:screen.width - 20,
     paddingHorizontal:8,
-    justifyContent:'center',
+    justifyContent:'flex-start',
     marginTop:10
   },
   chapOpt:{
