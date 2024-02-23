@@ -273,10 +273,10 @@ export default function HomeScreen({navigation}) {
                 </View>
               }/>
 
-              <Button action={() => {console.log(reverse); setReverse(!reverse);}} 
+              <Button action={() => setReverse(!reverse)} 
                   label='Meus devocionais'
                   icon={faSort}
-                  style={{marginTop:margin, marginBottom:10}}/>
+                  style={{zIndex:10, marginTop:margin, marginBottom:10}}/>
             </View>
           }
           data={reverse ? devocionais.reverse() : devocionais}

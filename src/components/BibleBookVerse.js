@@ -59,6 +59,7 @@ export default function BibleBookVerse({
               value={`${chapterVerse.number} ${chapterVerse.text}`} 
               style={[
                 styles.verseLbl, 
+                {textAlign:'justify'},
                 bold ? {fontFamily:'JosefinSans-Regular'} : {}
               ]}
               />
