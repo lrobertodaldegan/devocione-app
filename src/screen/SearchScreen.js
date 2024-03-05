@@ -14,6 +14,8 @@ import Icon from '../components/Icon';
 import { faArrowLeft, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { searchVerses } from '../service/BibleService';
 import SearchBibleVerseItem from '../components/SearchBibleVerseItem';
+import { BannerAd,BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-2420598559068720/2531953129';
 
 export default function SearchScreen({navigation}) {
   const [loading, setLoading] = useState(false);
@@ -61,20 +63,28 @@ export default function SearchScreen({navigation}) {
         keyboardDismissMode='on-drag' 
         keyboardShouldPersistTaps='always'
         ListHeaderComponent={
-          <View style={styles.header}>
-            <TouchableHighlight underlayColor={Colors.blue} 
-                onPress={() => navigation.goBack()} style={styles.goBackWrap}>
-              <Icon icon={faArrowLeft} label='Voltar' />
-            </TouchableHighlight>
+          <View style={{alignItems:'center'}}>
+            <BannerAd
+                  unitId={adUnitId}
+                  size={BannerAdSize.LARGE_BANNER}
+                  requestOptions={{requestNonPersonalizedAdsOnly: false,}}
+              />
+              
+            <View style={styles.header}>
+              <TouchableHighlight underlayColor={Colors.blue} 
+                  onPress={() => navigation.goBack()} style={styles.goBackWrap}>
+                <Icon icon={faArrowLeft} label='Voltar' />
+              </TouchableHighlight>
 
-            <TextInput style={styles.input}
-                value={word} onChangeText={setWord}
-                placeholder='Digite uma palavra com mais de 2 letras'/>
+              <TextInput style={styles.input}
+                  value={word} onChangeText={setWord}
+                  placeholder='Digite uma palavra com mais de 2 letras'/>
 
-            <TouchableHighlight underlayColor={Colors.blue} 
-                onPress={handleSearch} style={styles.goBackWrap}>
-              <Icon icon={faSearch} label='Buscar' />
-            </TouchableHighlight>
+              <TouchableHighlight underlayColor={Colors.blue} 
+                  onPress={handleSearch} style={styles.goBackWrap}>
+                <Icon icon={faSearch} label='Buscar' />
+              </TouchableHighlight>
+            </View>
           </View>
         }
         data={sResult}

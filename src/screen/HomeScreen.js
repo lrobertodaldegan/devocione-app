@@ -24,7 +24,8 @@ import {
   faQuoteRight, 
   faSearch, 
   faX, 
-  faSort 
+  faSort, 
+  faBookOpen
 } from '@fortawesome/free-solid-svg-icons';
 import { DevocionalService } from '../service/DevocionalService';
 import ListItem from '../components/ListItem';
@@ -204,25 +205,43 @@ export default function HomeScreen({navigation}) {
             <TouchableHighlight underlayColor={Colors.white} 
                 style={styles.menuBtn}
                 onPress={()=>navigation.navigate('Bible', {selectable:true})}>
-              <Icon icon={faBible} label='Abrir Bíblia' />
+              <Icon icon={faBible} label='Abrir a Bíblia' 
+                  style={styles.menuBtnLbl}/>
             </TouchableHighlight>
 
             <TouchableHighlight underlayColor={Colors.white} 
                 style={styles.menuBtn}
                 onPress={()=>navigation.navigate('Search')}>
-              <Icon icon={faSearch} label='Pesquisa bíblica' />
+              <Icon icon={faSearch} label='Pesquisa bíblica' 
+                  style={styles.menuBtnLbl}/>
+            </TouchableHighlight>
+
+            <TouchableHighlight underlayColor={Colors.white} 
+                style={styles.menuBtn}
+                onPress={()=>navigation.navigate('Plans')}>
+              <Icon icon={faBookOpen} label='Planos de leitura' 
+                  style={styles.menuBtnLbl}/>
             </TouchableHighlight>
 
             <TouchableHighlight underlayColor={Colors.white} 
                 style={styles.menuBtn}
                 onPress={()=>Linking.openURL('https://play.google.com/store/apps/developer?id=Lucas+Roberto+Daldegan')}>
-              <Icon icon={faMobileScreenButton} label='Nossos apps' />
+              <Icon icon={faMobileScreenButton} label='Nossos apps' 
+                  style={styles.menuBtnLbl}/>
+            </TouchableHighlight>
+
+            <TouchableHighlight underlayColor={Colors.white} 
+                style={styles.menuBtn}
+                onPress={()=>Linking.openURL('https://play.google.com/store/apps/details?id=com.devocione')}>
+              <Icon icon={faMobileScreenButton} label='Nos ajude avaliando o app 🙌' 
+                  style={styles.menuBtnLbl}/>
             </TouchableHighlight>
 
             <TouchableHighlight underlayColor={Colors.white} 
                 style={styles.menuBtn}
                 onPress={()=>navigation.navigate('About')}>
-              <Icon icon={faAddressCard} label='Sobre nós' />
+              <Icon icon={faAddressCard} label='Sobre nós' 
+                  style={styles.menuBtnLbl}/>
             </TouchableHighlight>
           </View>
 
@@ -349,6 +368,10 @@ const styles = StyleSheet.create({
     padding:10,
     borderRadius:10,
     margin:10,
+    width:(screen.width - 40) * 0.28,
+  },
+  menuBtnLbl:{
+    textAlign:'center'
   },
   closeModal:{
     width:screen.width - 10,

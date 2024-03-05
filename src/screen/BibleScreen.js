@@ -39,15 +39,18 @@ export default function BibleScreen({navigation, route}) {
 
   const renderListItem = ({item}) => {
     if(showAllBooks === false){
-      if(book && book === item.name){
+      let match = (book === item.name || book === item.abbrev.pt);
+
+      if(book && match){
         return (
           <BibleBook abrev={item.abbrev.pt} 
               label={item.name} 
               chapters={item.chapters}
               verse={verse}
               chapter={chapter}
-              expand={item.name === book}
+              expand={match}
               selectable={selectable === true}
+              navigation={navigation}
           />
         )
       } else {
@@ -63,6 +66,7 @@ export default function BibleScreen({navigation, route}) {
             expand={item.name === book}
             selectable={selectable === true}
             onVerseSelect={handleSelection}
+            navigation={navigation}
         />
       )
     }

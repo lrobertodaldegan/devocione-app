@@ -13,7 +13,9 @@ import { faCheck, faCheckSquare } from '@fortawesome/free-solid-svg-icons';
 export default function CheckBoxInput({
                                 labelSize=16, 
                                 iconSize=20, 
-                                onSubmit=(value)=>null}) {
+                                placeHolder='Novo motivo para interceder',
+                                onSubmit=(value)=>null,
+                              }) {
   const [value, setValue] = useState(null);
 
   const handleSubmit = () => {
@@ -31,7 +33,7 @@ export default function CheckBoxInput({
       <TextInput value={value} 
           style={[styles.input, {fontSize:labelSize}]}
           onChangeText={(text) => setValue(text)}
-          placeholder='Novo motivo para interceder'
+          placeholder={placeHolder}
           placeholderTextColor={Colors.gray}
           textBreakStrategy='simple'
           multiline={true}

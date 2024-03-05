@@ -18,6 +18,7 @@ export default function BibleBookVerse({
                                 chapter,
                                 bold=false, 
                                 selectable=false, 
+                                navigation,
                                 onSelect=(text)=>null
                               }) {
   const [date, setDate] = useState(null);
