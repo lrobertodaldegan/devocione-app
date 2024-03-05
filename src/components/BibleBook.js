@@ -8,7 +8,6 @@ import {
 }from 'react-native';
 import {Colors} from '../utils/Colors';
 import WhiteButton from './WhiteButton';
-import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import Label from './Label';
 import BibleBookChapter from './BibleBookChapter';
 import { getChapter } from '../service/BibleService';
@@ -35,7 +34,7 @@ export default function BibleBook({
   useEffect(() => {
     if(chapter !== null && expand === true){
       setExpanded(true);
-      handleChapterSelection(chapter);
+      handleChapterSelection(new Number(chapter));
 
       onAutomaticSelect();
     }
