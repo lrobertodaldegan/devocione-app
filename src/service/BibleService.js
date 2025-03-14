@@ -3,6 +3,7 @@ import CacheService from "./CacheService";
 import { Days } from "../utils";
 
 const HEADERS = {
+  'Accept': '*/*',
   'X-Requested-With': 'XMLHttpRequest',
   'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ik1vbiBOb3YgMjAgMjAyMyAxOTo1OTozNCBHTVQrMDAwMC5scm9iZXJ0b2RhbGRlZ2FuQGhvdG1haWwuY29tIiwiaWF0IjoxNzAwNTEwMzc0fQ.XMsrrf_p_edVWE3DbVn1u7ety2Ny62o2JE1vF7JlMbw'
 }
@@ -13,8 +14,10 @@ const getDt = () => {
   return `${Days[d.getDay()]} - ${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
 }
 
+
+
 const getRandomVerse = async (errorHandler=()=>null) => {
-  return get('https://www.abibliadigital.com.br/api/verses/nvi/random', 
+  return get(`https://www.abibliadigital.com.br/api/verses/nvi/random?d=${new Date().getMilliseconds()}`, 
               errorHandler, HEADERS)
   .then(async (response) => {
     let result = {status:response.status, content:{...response.data}, dt:getDt()};

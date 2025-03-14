@@ -1,20 +1,20 @@
 import axios from 'axios';
 
 const DEFAULT_HEADERS = {
-  'X-Requested-With': 'XMLHttpRequest'
+  'X-Requested-With': 'XMLHttpRequest',
+  'Accept': '*/*',
 }
 
 const get = async (urlPath, errorHandler=()=>null, headers=DEFAULT_HEADERS) => {
   try{
-    let response = await axios.get(urlPath, headers/*{
+    let response = await axios.get(urlPath, {
       withCredentials:true,
-      headers: {...headers, 'Authorization':jwt}
-    }*/);
+      headers: headers
+    });
 
     return response;
   }catch(err){
-    console.log(err);
-
+    console.log(err.request._response);
     errorHandler();
 
     return {status:500, error:err}
@@ -32,7 +32,7 @@ const post = async (urlPath, body={}, errorHandler=()=>null, headers=DEFAULT_HEA
 
     return response;
   }catch(err){
-    console.log(err);
+    console.log(err.request._response);
 
     errorHandler();
 
@@ -51,7 +51,7 @@ const del = async (urlPath, errorHandler=()=>null, headers=DEFAULT_HEADERS) => {
 
     return response;
   }catch(err){
-    console.log(err);
+    console.log(err.request._response);
 
     errorHandler();
 
@@ -70,7 +70,7 @@ const put = async (urlPath, body={}, errorHandler=()=>null, headers=DEFAULT_HEAD
 
     return response;
   }catch(err){
-    console.log(err);
+    console.log(err.request._response);
 
     errorHandler();
 
