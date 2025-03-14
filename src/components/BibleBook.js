@@ -4,10 +4,10 @@ import {
     View,
     Dimensions,
     ActivityIndicator,
+    TouchableHighlight,
 }from 'react-native';
 import {Colors} from '../utils/Colors';
 import WhiteButton from './WhiteButton';
-import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import Label from './Label';
 import BibleBookChapter from './BibleBookChapter';
 import { getChapter } from '../service/BibleService';
@@ -21,6 +21,7 @@ export default function BibleBook({
                                 chapter=null, 
                                 verse=null, 
                                 selectable=false,
+                                navigation,
                                 onVerseSelect=(txt)=>null,
                                 onAutomaticSelect=()=>null}) {
 
@@ -29,12 +30,11 @@ export default function BibleBook({
   const [loading, setLoading] = useState(false);
   const [chapterVerses, setChapterVerses] = useState([]);
   const [chapterSelected, setChapterSelected] = useState(null);
-  const [icon, setIcon] = useState(faChevronDown);
 
   useEffect(() => {
     if(chapter !== null && expand === true){
       setExpanded(true);
-      handleChapterSelection(chapter);
+      handleChapterSelection(new Number(chapter));
 
       onAutomaticSelect();
     }
@@ -56,7 +56,6 @@ export default function BibleBook({
           setChapterVerses(result.content.verses);
           setShowChapterContent(true);
           setExpanded(true);
-          setIcon(faChevronUp);
         }
 
         setLoading(false);
@@ -68,8 +67,6 @@ export default function BibleBook({
     let exp = !expanded;
 
     setExpanded(exp);
-    
-    setIcon(exp === true ? faChevronUp : faChevronDown);
 
     if(exp === false){
       setShowChapterContent(false);
@@ -82,11 +79,12 @@ export default function BibleBook({
     if(expanded === true){
       let opts = []
       
+      
       for(let i=0; i < chapters; i++){
         opts.push(
           <BibleBookChapter key={`${abrev}${i}`} 
               chapter={i+1} 
-              selected={chapterSelected === i+1}
+              selected={`${chapterSelected}` === `${i+1}`}
               onSelection={handleChapterSelection}/>
         );
       }
@@ -99,6 +97,36 @@ export default function BibleBook({
     } else {
       return <></>
     }
+  }
+
+  const renderGoBackChap = () => {
+    if(chapterSelected > 1){
+      return (
+        <TouchableHighlight underlayColor='transparent'
+            style={styles.navChapBtn}
+            onPress={() => handleChapterSelection(chapterSelected - 1)}>
+          <Label value={'< Capítulo anterior'}
+              size={14} style={{color:Colors.blue, textAlign:'center'}}/>
+        </TouchableHighlight>
+      );
+    }
+
+    return <></>
+  }
+
+  const renderGoOnChap = () => {
+    if(chapterSelected < chapters){
+      return (
+        <TouchableHighlight underlayColor='transparent'
+            style={styles.navChapBtn}
+            onPress={() => handleChapterSelection(chapterSelected + 1)}>
+          <Label value={'Próximo capítulo >'}
+              size={14} style={{color:Colors.blue, textAlign:'center'}}/>
+        </TouchableHighlight>
+      );
+    }
+
+    return <></>
   }
 
   const renderContent = () => {
@@ -121,6 +149,7 @@ export default function BibleBook({
                 selectable={selectable}
                 bold={bold}
                 onSelect={onVerseSelect}
+                navigation={navigation}
             />
           );
         });
@@ -128,6 +157,10 @@ export default function BibleBook({
         return (
           <View style={styles.chapterContentWrap}>
             {verses}
+
+            {renderGoBackChap()}
+
+            {renderGoOnChap()}
           </View>
         )
       } else {
@@ -138,7 +171,7 @@ export default function BibleBook({
 
   return (
     <View style={styles.wrap}>
-      <WhiteButton icon={icon} label={label} 
+      <WhiteButton label={label} 
           align='flex-start'
           action={() => handlePress()}/>
 
@@ -160,7 +193,7 @@ const styles = StyleSheet.create({
     flexWrap:'wrap',
     maxWidth:screen.width - 20,
     paddingHorizontal:8,
-    justifyContent:'center',
+    justifyContent:'flex-start',
     marginTop:10
   },
   chapOpt:{
@@ -189,5 +222,8 @@ const styles = StyleSheet.create({
     color:Colors.darkGray,
     fontFamily:'JosefinSans-Light',
     marginBottom:5
+  },
+  navChapBtn:{
+    marginVertical:10
   },
 });

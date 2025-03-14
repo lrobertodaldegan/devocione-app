@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
         position:'absolute',
         top:screen.height * 0.23,
         paddingVertical:20,
-        paddingHorizontal:10
+        paddingHorizontal:10,
+        zIndex:99,
     },
 });

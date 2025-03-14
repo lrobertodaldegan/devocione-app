@@ -19,7 +19,7 @@ export default function Footer() {
 
             <BannerAd
                     unitId={adUnitId}
-                    size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+                    size={BannerAdSize.LARGE_BANNER}
                     requestOptions={{requestNonPersonalizedAdsOnly: false,}}
             />
         </View>

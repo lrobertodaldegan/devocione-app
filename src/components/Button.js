@@ -8,13 +8,24 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {Colors} from '../utils/Colors';
 import Label from './Label';
 
-export default function Button({label, labelSize=18, icon, iconSize=15, action=()=>null}) {
+export default function Button({
+                            label, 
+                            labelSize=18, 
+                            icon, 
+                            iconSize=15, 
+                            action=()=>null,
+                            labelColor=Colors.blue,
+                            iconColor=Colors.green,
+                            style={}
+                        }) {
     return (
-        <TouchableHighlight underlayColor={Colors.white} onPress={() => action()}>
-            <View style={styles.lblWrap}>
-                <Label value={label} style={styles.lbl} size={labelSize}/>
+        <TouchableHighlight underlayColor={'transparent'} onPress={() => action()}>
+            <View style={[styles.lblWrap, style]}>
+                <Label value={label} 
+                    style={[styles.lbl, {color:labelColor}]} size={labelSize}/>
 
-                <FontAwesomeIcon icon={icon} style={[styles.icon]} size={iconSize}/>
+                <FontAwesomeIcon icon={icon} 
+                    style={[styles.icon, {color:iconColor}]} size={iconSize}/>
             </View>
 
         </TouchableHighlight>

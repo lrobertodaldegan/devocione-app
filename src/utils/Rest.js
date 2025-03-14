@@ -22,13 +22,11 @@ const get = async (urlPath, errorHandler=()=>null, headers=DEFAULT_HEADERS) => {
 }
 
 const post = async (urlPath, body={}, errorHandler=()=>null, headers=DEFAULT_HEADERS) => {
-  try{
-    let jwt = await CacheService.get('@jwt');
-    
-    let response = await axios.post(`${BASEURL}${urlPath}`, body, {
+  try{    
+    let response = await axios.post(urlPath, body, headers/*{
       withCredentials:true,
       headers: {...headers, 'Authorization':jwt}
-    });
+    }*/);
 
     return response;
   }catch(err){

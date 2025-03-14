@@ -9,6 +9,9 @@ import {Colors} from './src/utils/Colors';
 import HomeScreen from './src/screen/HomeScreen';
 import DevocionalScreen from './src/screen/DevocionalScreen';
 import BibleScreen from './src/screen/BibleScreen';
+import AboutScreen from './src/screen/AboutScreen';
+import SearchScreen from './src/screen/SearchScreen';
+import PlansScreen from './src/screen/PlansScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -39,6 +42,9 @@ export default function App(): JSX.Element {
           <Stack.Screen name="Home" component={HomeScreen} options={ScreenOptions} />
           <Stack.Screen name="Devocional" component={DevocionalScreen} options={ScreenOptions} />
           <Stack.Screen name="Bible" component={BibleScreen} options={ScreenOptions} />
+          <Stack.Screen name="About" component={AboutScreen} options={ScreenOptions} />
+          <Stack.Screen name="Search" component={SearchScreen} options={ScreenOptions} />
+          <Stack.Screen name="Plans" component={PlansScreen} options={ScreenOptions} />
         </Stack.Navigator>
       </NavigationContainer>
     </>

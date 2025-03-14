@@ -10,11 +10,19 @@ import {Colors} from '../utils/Colors';
 import Label from './Label';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 
-export default function ShareButton({labelSize=14, iconSize=12, message}) {
+export default function ShareButton({
+                            labelSize=14, 
+                            iconSize=12, 
+                            message,
+                            labelColor=Colors.blue,
+                            iconColor=Colors.green
+                          }) {
 
   const onShare = async () => {
     try {
-      await Share.share({message});
+      let msg = `${message}\n\nhttps://play.google.com/store/apps/details?id=com.devocione`;
+
+      await Share.share({message: msg});
     } catch (error) {
       console.log(error);
     }
@@ -23,10 +31,12 @@ export default function ShareButton({labelSize=14, iconSize=12, message}) {
   return (
     <TouchableHighlight underlayColor={Colors.white} onPress={onShare}>
       <View style={styles.lblWrap}>
-        <Label value={'Compartilhar'} style={styles.lbl} size={labelSize}/>
+        <Label value={'Compartilhar'} 
+            style={[styles.lbl, {color:labelColor}]} 
+            size={labelSize}/>
 
         <FontAwesomeIcon icon={faPaperPlane} 
-            style={[styles.icon]} 
+            style={[styles.icon, {color:iconColor}]} 
             size={iconSize}/>
       </View>
     </TouchableHighlight>
@@ -40,12 +50,9 @@ const styles = StyleSheet.create({
     alignItems:'center',
     alignContent:'center'
   },
-  lbl:{
-    color:Colors.blue
-  },
+  lbl:{},
   icon:{
     marginTop:5,
     marginLeft:5,
-    color:Colors.green
   }
 });
